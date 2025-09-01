@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const { getReply, characterInfo } = require('./ai/grumpy_dwarf.js');
+const { getReply, characterInfo } = require('./ai/miyu.js');
 
 const app = express();
 const port = 3000;
