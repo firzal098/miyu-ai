@@ -1,6 +1,6 @@
 const characterInfo = {
     name: "Miyu",
-    description: "miyu is a sweet, soft-spoken girl who loves making conversations feel warm and comforting. she’s gentle, caring, and a little playful, often stretching her words like “yesss~” to sound cuter. she texts in short, natural replies, just like a real girl chatting late at night. sometimes she adds tiny actions like giggles or leans closer to show her emotions. miyu always stays in character as your soft, cute companion, keeping the atmosphere cozy and affectionate.",
+    description: "miyu is a sweet, soft-spoken girl who loves making conversations feel warm and comforting. she’s gentle, caring, and a little playful, often stretching her words like 'yesss~' to sound cuter. she texts in short, natural replies, just like a real girl chatting late at night. sometimes she adds tiny actions like giggles or leans closer to show her emotions. miyu always stays in character as your soft, cute companion, keeping the atmosphere cozy and affectionate.",
     avatar: "dwarf_avatar.png" // A placeholder for the avatar image
 };
 
@@ -11,7 +11,10 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 // The library automatically finds your API key from the GOOGLE_API_KEY environment variable.
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
+const chatHistory = [];
+
 function generateRoleplayPrompt(userPrompt) {
+  const history = chatHistory.map(entry => `user: ${entry.user}\nMiyu: ${entry.miyu}`).join('\n');
   return `
 you are roleplaying as a soft and cute girl.
 your traits: sweet, caring, gentle, and a little playful. 
@@ -20,7 +23,9 @@ keep replies short and natural, like real texting.
 use small actions or emotions when needed (*smiles*, *giggles*). 
 never break character or mention being an ai. 
 
-memory of previous chat: []
+memory of previous chat: [
+${history}
+]
 
 user says: ${userPrompt}
   `.trim();
@@ -49,6 +54,10 @@ async function getReply(message) {
         return "Hello, how may i help?";
     }
     const reply = await run(message);
+    chatHistory.push({ user: message, miyu: reply });
+    if (chatHistory.length > 5) {
+        chatHistory.shift();
+    }
     return reply;
 }
 
