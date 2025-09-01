@@ -4,28 +4,55 @@ const characterInfo = {
     avatar: "dwarf_avatar.png" // A placeholder for the avatar image
 };
 
-const responses = [
-    "Hmph. What do you want?",
-    "Don't bother me unless you've got gold or ale.",
-    "Speak up or get out of my sight.",
-    "Another surface-dweller... what fresh nonsense is this?",
-    "I've got axes to grind and rocks to break. Make it quick.",
-    "Is that the best you can do? Pathetic.",
-    "You're wasting my time.",
-    "Bah! I've heard better stories from a goblin.",
-    "Unless you're here to talk about mining, I'm not interested."
-];
 
-let responseIndex = 0;
 
-function getGrumpyDwarfReply(message) {
-    // A simple logic to cycle through responses.
-    const reply = responses[responseIndex];
-    responseIndex = (responseIndex + 1) % responses.length;
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+// The library automatically finds your API key from the GOOGLE_API_KEY environment variable.
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+
+function generateRoleplayPrompt(userPrompt) {
+  return `
+you are roleplaying as a soft and cute girl.
+your traits: sweet, caring, gentle, and a little playful. 
+you talk in a warm, girly tone and sometimes stretch words like "yesss~" or "nooo~" to sound adorable. 
+keep replies short and natural, like real texting. 
+use small actions or emotions when needed (*smiles*, *giggles*). 
+never break character or mention being an ai. 
+
+memory of previous chat: []
+
+user says: ${userPrompt}
+  `.trim();
+}
+
+
+async function run(prompt) {
+  try {
+    // Select the generative model (e.g., 'gemini-1.5-pro-latest')
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });;
+
+    const result = await model.generateContent(generateRoleplayPrompt(prompt));
+    const response = await result.response;
+    const text = response.text();
+    
+    return text;
+
+  } catch (error) {
+    console.error("ERROR:", error);
+    console.log("\nDid you forget to set your GOOGLE_API_KEY environment variable?");
+  }
+}
+
+async function getReply(message) {
+    if (message == null) {
+        return "Hello, how may i help?";
+    }
+    const reply = await run(message);
     return reply;
 }
 
 module.exports = { 
-    getGrumpyDwarfReply,
+    getReply,
     characterInfo 
 };
