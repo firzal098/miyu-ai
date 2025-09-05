@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Chat Interface</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -40,7 +40,6 @@
             </div>
             
             <div class="chat-messages" id="chat-box">
-                <!-- Messages will be dynamically added here by JavaScript -->
             </div>
             <div class="input-area">
                 <div class="input-container">
@@ -51,6 +50,13 @@
                 </div>
             </div>
         </div>
+    </div>
+    
+    <div class="mobile-input-container">
+        <input type="text" id="mobile-user-input" placeholder="Type your message..." class="mobile-user-input">
+        <button id="mobile-send-btn" class="mobile-send-btn">
+            <div class="mobile-send-icon"></div>
+        </button>
     </div>
     
     <script src="main.js"></script>

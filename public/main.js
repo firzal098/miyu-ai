@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const characterAvatar = document.getElementById('character-avatar');
     const chatIcon = document.querySelector('.chat-icon');
     const chatInterface = document.querySelector('.chat-interface');
+    
+    // Mobile elements
+    const mobileUserInput = document.getElementById('mobile-user-input');
+    const mobileSendBtn = document.getElementById('mobile-send-btn');
 
     const fetchCharacterInfo = async () => {
         try {
@@ -84,15 +88,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const sendMessage = async () => {
-        const message = userInput.value.trim();
+    const sendMessage = async (inputElement = userInput) => {
+        const message = inputElement.value.trim();
         if (message === '') return;
 
-        addMessage(message, 'user');
-        userInput.value = '';
+        // Only add message to chat if chat interface is visible (desktop/tablet)
+        if (window.innerWidth > 768) {
+            addMessage(message, 'user');
+        }
+        
+        // Clear input
+        inputElement.value = '';
 
-        // Show typing indicator
-        const typingIndicator = showTypingIndicator();
+        // Show typing indicator only on desktop/tablet
+        let typingIndicator = null;
+        if (window.innerWidth > 768) {
+            typingIndicator = showTypingIndicator();
+        }
 
         try {
             const response = await fetch('/chat', {
@@ -105,22 +117,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             
-            // Hide typing indicator and show AI response
-            setTimeout(() => {
-                hideTypingIndicator(typingIndicator);
-                addMessage(data.reply, 'ai');
-            }, 1000); // Simulate AI thinking time
+            // Hide typing indicator and show AI response only on desktop/tablet
+            if (window.innerWidth > 768) {
+                setTimeout(() => {
+                    hideTypingIndicator(typingIndicator);
+                    addMessage(data.reply, 'ai');
+                }, 1000); // Simulate AI thinking time
+            }
             
         } catch (error) {
             console.error('Error:', error);
-            hideTypingIndicator(typingIndicator);
-            addMessage('Sorry, something went wrong.', 'ai');
+            if (window.innerWidth > 768) {
+                hideTypingIndicator(typingIndicator);
+                addMessage('Sorry, something went wrong.', 'ai');
+            }
         }
     };
 
     const initializeChat = () => {
-        // Add initial AI welcome message
-        addMessage('Hai, User. Welcome back to mee!', 'ai');
+        // Add initial AI welcome message only on desktop/tablet
+        if (window.innerWidth > 768) {
+            addMessage('Hai, User. Welcome back to mee!', 'ai');
+        }
     };
 
     const toggleChat = () => {
@@ -129,13 +147,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Event listeners
-    sendBtn.addEventListener('click', sendMessage);
+    sendBtn.addEventListener('click', () => sendMessage(userInput));
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            sendMessage();
+            sendMessage(userInput);
         }
     });
     chatIcon.addEventListener('click', toggleChat);
+    
+    // Mobile event listeners
+    if (mobileSendBtn && mobileUserInput) {
+        mobileSendBtn.addEventListener('click', () => sendMessage(mobileUserInput));
+        mobileUserInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage(mobileUserInput);
+            }
+        });
+    }
 
     // Initialize
     fetchCharacterInfo();
