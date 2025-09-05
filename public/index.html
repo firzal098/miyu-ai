@@ -3,24 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Roleplay Chat</title>
+    <title>AI Chat Interface</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app-container">
-        <div id="character-profile">
-            <div id="character-avatar"></div>
-            <div id="character-name"></div>
-            <div id="character-description"></div>
-        </div>
-        <div id="chat-container">
-            <div id="chat-box"></div>
-            <div id="input-container">
-                <input type="text" id="user-input" placeholder="Type your message...">
-                <button id="send-btn">&#10148;</button>
+    <div class="container">
+        <div class="background-image"></div>
+        <div class="chat-interface">
+            <div class="chat-header">
+                <div class="chat-indicator"></div>
+                <h1 class="chat-title">Chat</h1>
+                <div class="chat-icon"></div>
+            </div>
+        
+            <div class="character-info">
+                <div class="character-avatar" id="character-avatar"></div>
+                <div class="character-details">
+                    <h2 class="character-name" id="character-name"></h2>
+                    <p class="character-description" id="character-description"></p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-box">
+                <!-- Messages will be dynamically added here by JavaScript -->
+            </div>
+            <div class="input-area">
+                <div class="input-container">
+                    <input type="text" id="user-input" placeholder="Type your message..." class="user-input">
+                    <button id="send-btn" class="send-btn">
+                        <div class="send-icon"></div>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+    
     <script src="main.js"></script>
 </body>
 </html>
