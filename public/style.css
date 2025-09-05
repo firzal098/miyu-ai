@@ -8,6 +8,21 @@ body {
     font-family: 'Helvetica Rounded', Arial, sans-serif;
     overflow: hidden;
     height: 100vh;
+    margin: 0;
+    padding: 0;
+    
+}
+
+/* Make the canvas fill the screen */
+#canvas {
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    z-index: 3;
+    position: relative;
+    left: -20vw;
+    pointer-events: none;
+
 }
 
 .container {

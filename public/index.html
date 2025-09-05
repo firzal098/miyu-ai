@@ -7,8 +7,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "./three/build/three.module.js",
+            "@pixiv/three-vrm": "./@pixiv/three-vrm/lib/three-vrm.module.js",
+
+            "three/addons/loaders/GLTFLoader.js": "./three/examples/jsm/loaders/GLTFLoader.js",
+            "three/addons/controls/OrbitControls.js": "./three/examples/jsm/controls/OrbitControls.js"
+        }
+    }
+    </script>
+
+    <script type="module" src="character.js"></script>
+
     <div class="container">
         <div class="background-image"></div>
+        <canvas id="canvas"></canvas>
         <div class="chat-interface">
             <div class="chat-header">
                 <div class="chat-indicator"></div>
