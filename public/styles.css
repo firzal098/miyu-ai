@@ -23,6 +23,61 @@ body {
     display: none;
 }
 
+/* Mobile AI Response Bubble */
+.mobile-ai-bubble {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100vw - 40px);
+    z-index: 1001;
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    animation: mobileBubbleSlideIn 0.3s ease-out forwards;
+}
+
+@keyframes mobileBubbleSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.mobile-ai-bubble-content {
+    background: #FF77A6;
+    border-radius: 20px 20px 5px 20px;
+    padding: 15px 20px;
+    box-shadow: 0px 4px 20px rgba(246, 75, 158, 0.3);
+    position: relative;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+.mobile-ai-bubble-text {
+    font-family: 'Helvetica Rounded', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.mobile-ai-bubble-arrow {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #FF77A6;
+}
+
 /* Make the canvas fill the screen */
 #canvas {
     width: 100vw;
@@ -143,7 +198,7 @@ body {
     height: 100px;
     object-fit: cover;
     border-radius: 50%;
-    background-image: url('assets/character-avatar.png');
+    background-image: url('assets/profile-avatar.png');
     background-size: cover;
     background-position: center;
     margin-right: 20px;
@@ -174,6 +229,9 @@ body {
     line-height: 1.177;
     color: #FF77A6;
     margin: 0;
+    width: 400px;
+    max-width: 500px;
+    word-wrap: break-word;
 }
 
 /* Chat Messages */
@@ -317,6 +375,12 @@ body {
     transform: scale(1.02);
 }
 
+.user-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .input-container {
     position: relative;
     width: 100%;
@@ -367,6 +431,91 @@ body {
     background-image: url('assets/send-icon.png');
     background-size: cover;
     background-position: center;
+}
+
+/* Mic Button Styles */
+.mic-btn {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.mic-btn:hover {
+    background: rgba(255, 119, 166, 0.1);
+    transform: scale(1.05);
+}
+
+.mic-btn:active {
+    transform: scale(0.95);
+}
+
+.mic-btn.recording {
+    background: rgba(255, 77, 77, 0.2);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.mic-icon {
+    width: 34px;
+    height: 34px;
+    background: #FF77A6;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1ZM19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19ZM11 22H13V24H11V22Z' fill='%23FF77A6'/%3E%3C/svg%3E") no-repeat center;
+    mask-size: contain;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1ZM19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19ZM11 22H13V24H11V22Z' fill='%23FF77A6'/%3E%3C/svg%3E") no-repeat center;
+    -webkit-mask-size: contain;
+}
+
+/* Stop Button Styles */
+.stop-btn {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.stop-btn:hover {
+    background: rgba(255, 77, 77, 0.1);
+    transform: scale(1.05);
+}
+
+.stop-btn:active {
+    transform: scale(0.95);
+}
+
+.stop-icon {
+    width: 24px;
+    height: 24px;
+    background: #FF4D4D;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 6H18V18H6V6Z' fill='%23FF4D4D'/%3E%3C/svg%3E") no-repeat center;
+    mask-size: contain;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 6H18V18H6V6Z' fill='%23FF4D4D'/%3E%3C/svg%3E") no-repeat center;
+    -webkit-mask-size: contain;
 }
 
 /* Scrollbar Styling */
@@ -445,7 +594,11 @@ body {
         right: 20px;
         width: 520px;
     }
-    
+    .character-description {
+        font-size: 18px;
+        width: 350px;
+        max-width: 500px;
+    }
     #canvas {
         left: -15vw;
     }
@@ -466,16 +619,14 @@ body {
     
     .character-description {
         font-size: 18px;
+        width: 300px;
+        max-width: 500px;
     }
     
     .message-content {
         max-width: 320px;
         font-size: 16px;
     }
-    .send-icon {
-    width: 28px;
-    height: 28px;
-}
 }
 
 /* Tablet (1024px and below) */
@@ -486,9 +637,7 @@ body {
         top: 40px;
     }
     
-    #canvas {
-        left: -10vw;
-    }
+
     
     .character-info {
         margin-left: 25px;
@@ -527,7 +676,6 @@ body {
     .mobile-input-container {
         display: none;
     }
-    
 }
 @media (max-width: 980px) {
     .chat-interface {
@@ -550,7 +698,7 @@ body {
         max-width: 320px;
         font-size: 13px;
     }
-    
+        
 }
 @media (max-width: 900px) {
     .chat-interface {
@@ -567,6 +715,8 @@ body {
     
     .character-description {
         font-size: 15px;
+        width: 200px;
+        max-width: 500px;
     }
     
     .message-content {
@@ -623,6 +773,12 @@ body {
         color: #999;
     }
     
+    .mobile-user-input:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
     .mobile-send-btn {
         width: 40px;
         height: 40px;
@@ -647,6 +803,86 @@ body {
         background-image: url('assets/send-icon.png');
         background-size: cover;
         background-position: center;
+    }
+    
+    /* Mobile AI Bubble Styles */
+    .mobile-ai-bubble {
+        bottom: 85px;
+        max-width: calc(100vw - 30px);
+    }
+    
+    .mobile-ai-bubble-content {
+        max-width: 280px;
+        padding: 12px 18px;
+    }
+    
+    .mobile-ai-bubble-text {
+        font-size: 15px;
+    }
+    
+    /* Mobile Mic Button Styles */
+    .mobile-mic-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        margin-right: 8px;
+    }
+    
+    .mobile-mic-btn:active {
+        background: rgba(255, 119, 166, 0.1);
+        transform: scale(0.95);
+    }
+    
+    .mobile-mic-btn.recording {
+        background: rgba(255, 77, 77, 0.2);
+        animation: pulse 1s infinite;
+    }
+    
+    .mobile-mic-icon {
+        width: 30px;
+        height: 30px;
+        background: #FF77A6;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1ZM19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19ZM11 22H13V24H11V22Z' fill='%23FF77A6'/%3E%3C/svg%3E") no-repeat center;
+        mask-size: contain;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1ZM19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19ZM11 22H13V24H11V22Z' fill='%23FF77A6'/%3E%3C/svg%3E") no-repeat center;
+        -webkit-mask-size: contain;
+    }
+    
+    /* Mobile Stop Button Styles */
+    .mobile-stop-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        margin-right: 8px;
+    }
+    
+    .mobile-stop-btn:active {
+        background: rgba(255, 77, 77, 0.1);
+        transform: scale(0.95);
+    }
+    
+    .mobile-stop-icon {
+        width: 20px;
+        height: 20px;
+        background: #FF4D4D;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 6H18V18H6V6Z' fill='%23FF4D4D'/%3E%3C/svg%3E") no-repeat center;
+        mask-size: contain;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 6H18V18H6V6Z' fill='%23FF4D4D'/%3E%3C/svg%3E") no-repeat center;
+        -webkit-mask-size: contain;
     }
 }
 
@@ -685,6 +921,16 @@ body {
     }
     
     .mobile-send-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .mobile-mic-btn {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .mobile-mic-icon {
         width: 28px;
         height: 28px;
     }
@@ -760,7 +1006,7 @@ body {
 }
 
 /* Landscape orientation adjustments */
-@media screen and (max-height: 800px) and (orientation: landscape) {
+@media screen and (max-height: 890px) and (orientation: landscape) {
     .chat-interface {
         display: none;
     }
@@ -770,7 +1016,8 @@ body {
         width: 100vw;
         height: 100vh;
     }
-
+    
+    /* Mobile Input Area - Fixed at bottom */
     .mobile-input-container {
         display: flex;
         position: fixed;
@@ -807,6 +1054,12 @@ body {
         color: #999;
     }
     
+    .mobile-user-input:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
     .mobile-send-btn {
         width: 40px;
         height: 40px;
@@ -831,5 +1084,85 @@ body {
         background-image: url('assets/send-icon.png');
         background-size: cover;
         background-position: center;
+    }
+    
+    /* Mobile AI Bubble Styles */
+    .mobile-ai-bubble {
+        bottom: 100px;
+        max-width: calc(100vw - 30px);
+    }
+    
+    .mobile-ai-bubble-content {
+        max-width: 280px;
+        padding: 12px 18px;
+    }
+    
+    .mobile-ai-bubble-text {
+        font-size: 15px;
+    }
+    
+    /* Mobile Mic Button Styles */
+    .mobile-mic-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        margin-right: 8px;
+    }
+    
+    .mobile-mic-btn:active {
+        background: rgba(255, 119, 166, 0.1);
+        transform: scale(0.95);
+    }
+    
+    .mobile-mic-btn.recording {
+        background: rgba(255, 77, 77, 0.2);
+        animation: pulse 1s infinite;
+    }
+    
+    .mobile-mic-icon {
+        width: 25px;
+        height: 25px;
+        background: #FF77A6;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1ZM19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19ZM11 22H13V24H11V22Z' fill='%23FF77A6'/%3E%3C/svg%3E") no-repeat center;
+        mask-size: contain;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 1C10.34 1 9 2.34 9 4V12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12V4C15 2.34 13.66 1 12 1ZM19 10V12C19 15.87 15.87 19 12 19C8.13 19 5 15.87 5 12V10H7V12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12V10H19ZM11 22H13V24H11V22Z' fill='%23FF77A6'/%3E%3C/svg%3E") no-repeat center;
+        -webkit-mask-size: contain;
+    }
+    
+    /* Mobile Stop Button Styles */
+    .mobile-stop-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        margin-right: 8px;
+    }
+    
+    .mobile-stop-btn:active {
+        background: rgba(255, 77, 77, 0.1);
+        transform: scale(0.95);
+    }
+    
+    .mobile-stop-icon {
+        width: 20px;
+        height: 20px;
+        background: #FF4D4D;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 6H18V18H6V6Z' fill='%23FF4D4D'/%3E%3C/svg%3E") no-repeat center;
+        mask-size: contain;
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 6H18V18H6V6Z' fill='%23FF4D4D'/%3E%3C/svg%3E") no-repeat center;
+        -webkit-mask-size: contain;
     }
 }

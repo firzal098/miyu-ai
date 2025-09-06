@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Chat Interface</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <script type="importmap">
@@ -40,10 +40,17 @@
             </div>
             
             <div class="chat-messages" id="chat-box">
+                <!-- Messages will be dynamically added here by JavaScript -->
             </div>
             <div class="input-area">
                 <div class="input-container">
                     <input type="text" id="user-input" placeholder="Type your message..." class="user-input">
+                    <button id="mic-btn" class="mic-btn" style="display: none;">
+                        <div class="mic-icon"></div>
+                    </button>
+                    <button id="stop-btn" class="stop-btn" style="display: none;">
+                        <div class="stop-icon"></div>
+                    </button>
                     <button id="send-btn" class="send-btn">
                         <div class="send-icon"></div>
                     </button>
@@ -52,13 +59,28 @@
         </div>
     </div>
     
+    <!-- Mobile AI Response Bubble (hidden by default) -->
+    <div class="mobile-ai-bubble" id="mobile-ai-bubble" style="display: none;">
+        <div class="mobile-ai-bubble-content">
+            <div class="mobile-ai-bubble-text" id="mobile-ai-bubble-text"></div>
+        </div>
+        <div class="mobile-ai-bubble-arrow"></div>
+    </div>
+    
+    <!-- Mobile Input Container (hidden on desktop) -->
     <div class="mobile-input-container">
         <input type="text" id="mobile-user-input" placeholder="Type your message..." class="mobile-user-input">
+        <button id="mobile-mic-btn" class="mobile-mic-btn" style="display: none;">
+            <div class="mobile-mic-icon"></div>
+        </button>
+        <button id="mobile-stop-btn" class="mobile-stop-btn" style="display: none;">
+            <div class="mobile-stop-icon"></div>
+        </button>
         <button id="mobile-send-btn" class="mobile-send-btn">
             <div class="mobile-send-icon"></div>
         </button>
     </div>
     
-    <script src="main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
