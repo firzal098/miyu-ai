@@ -1,7 +1,8 @@
 // These "bare" imports are now mapped to your local files by the importmap
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { VRMLoaderPlugin, VRMUtils, VRMHumanBoneName  } from '@pixiv/three-vrm'; 
+import { GLTFLoader  } from 'three/addons/loaders/GLTFLoader.js';
+import { VRMLoaderPlugin, VRMUtils  } from '@pixiv/three-vrm'; 
+import { VRMAnimationLoaderPlugin } from '@pixiv/three-vrm-animation';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -46,69 +47,55 @@ if (enableOrbitControls) {
 }
 
 /**
- * The definitive translator function, built with your specific file data.
- * @param {THREE.AnimationClip} animationClip The animation clip from the loaded FBX.
- * @param {VRM} vrm The loaded VRM model.
+ * Retargets AND INVERTS a VRM animation clip.
+ * NOTE: This is a workaround and not the recommended solution.
+ * @param {THREE.AnimationClip} sourceClip The animation clip to modify.
+ * @param {VRM} vrm The loaded VRM object.
+ * @returns {THREE.AnimationClip} A new, modified AnimationClip.
  */
-function retargetFBXAnimation(animationClip, vrm) {
-    const tracks = [];
+function retargetAndInvertAnimation(sourceClip, vrm) {
+    const newTracks = [];
     const humanoid = vrm.humanoid;
 
-    const unityVRMBoneMap = {
-        'Hips': VRMHumanBoneName.Hips,
-        'Spine': VRMHumanBoneName.Spine,
-        'Chest': VRMHumanBoneName.Chest,
-        'UpperChest': VRMHumanBoneName.UpperChest,
-        'Neck': VRMHumanBoneName.Neck,
-        'Head': VRMHumanBoneName.Head,
-        'LeftShoulder': VRMHumanBoneName.LeftShoulder,
-        'LeftUpperArm': VRMHumanBoneName.LeftUpperArm,
-        'LeftLowerArm': VRMHumanBoneName.LeftLowerArm,
-        'LeftHand': VRMHumanBoneName.LeftHand,
-        'RightShoulder': VRMHumanBoneName.RightShoulder,
-        'RightUpperArm': VRMHumanBoneName.RightUpperArm,
-        'RightLowerArm': VRMHumanBoneName.RightLowerArm,
-        'RightHand': VRMHumanBoneName.RightHand,
-        'LeftUpperLeg': VRMHumanBoneName.LeftUpperLeg,
-        'LeftLowerLeg': VRMHumanBoneName.LeftLowerLeg,
-        'LeftFoot': VRMHumanBoneName.LeftFoot,
-        'RightUpperLeg': VRMHumanBoneName.RightUpperLeg,
-        'RightLowerLeg': VRMHumanBoneName.RightLowerLeg,
-        'RightFoot': VRMHumanBoneName.RightFoot,
-    };
+    for (const track of sourceClip.tracks) {
+        const parts = track.name.split('.');
+        const boneName = parts[0];
+        const propertyName = parts[1];
 
-    animationClip.tracks.forEach((track) => {
-        // This regex will extract the base bone name from a prefixed name like "miyu_Hips"
-        const match = track.name.match(/^(?:.*:)?([^.]+)\.(.+)$/);
-        if (!match) return;
+        const camelCaseBoneName = boneName.charAt(0).toLowerCase() + boneName.slice(1);
+        const targetNode = humanoid.getRawBoneNode(camelCaseBoneName);
 
-        const fbxBoneName = match[1];
-        const propertyName = match[2];
+        if (targetNode) {
+            const newTrackName = `${targetNode.name}.${propertyName}`;
+            const newTrack = track.clone();
+            newTrack.name = newTrackName;
 
-        let unityBoneName = null;
-        for (const name in unityVRMBoneMap) {
-            if (fbxBoneName.endsWith(name)) {
-                unityBoneName = name;
-                break;
+            // --- INVERSION LOGIC ---
+            // Check if this is a quaternion (rotation) track
+            if (propertyName === 'quaternion') {
+                const values = newTrack.values;
+                const tempQuat = new THREE.Quaternion();
+
+                // The values array is a flat list of [qx1, qy1, qz1, qw1, qx2, qy2, ... ]
+                // We need to step through it 4 values at a time
+                for (let i = 0; i < values.length; i += 4) {
+                    tempQuat.fromArray(values, i); // Load the quaternion
+                    tempQuat.invert();             // Invert it
+                    tempQuat.toArray(values, i);   // Store it back into the array
+                }
             }
-        }
-        
-        if (unityBoneName) {
-            const vrmHumanBoneName = unityVRMBoneMap[unityBoneName];
-            const vrmBoneNode = humanoid.getNormalizedBoneNode(vrmHumanBoneName); // Using the correct method
+            // --- END INVERSION LOGIC ---
 
-            if (vrmBoneNode) {
-                const newTrack = track.clone();
-                newTrack.name = `${vrmBoneNode.name}.${propertyName}`;
-                tracks.push(newTrack);
-            }
+            newTracks.push(newTrack);
         }
-    });
+    }
 
-    return new THREE.AnimationClip(animationClip.name, animationClip.duration, tracks);
+    return new THREE.AnimationClip(
+        `${sourceClip.name}_retargeted_inverted`,
+        sourceClip.duration,
+        newTracks
+    );
 }
-
-
 
 // 4. Load VRM Model
 let currentVrm = null;
@@ -118,34 +105,33 @@ let mixer = null;
 const loader = new GLTFLoader();
 loader.register((parser) => new VRMLoaderPlugin(parser));
 
+const animLoader = new GLTFLoader();
+animLoader.register((parser) => new VRMAnimationLoaderPlugin(parser));
+
 loader.load(
     './assets/miyu.vrm', // Your VRM file
     (gltf) => {
         currentVrm = gltf.userData.vrm;
         scene.add(currentVrm.scene);
-        currentVrm.scene.rotation.y = Math.PI;
+        //currentVrm.scene.rotation.y = Math.PI;
 
         // This helper function is crucial for normalizing the model's T-pose before animation.
         VRMUtils.rotateVRM0(currentVrm);
 
-        console.log("--- VRM BONE NAMES (Destination for Instructions) ---");
+        // console.log("--- VRM BONE NAMES (Destination for Instructions) ---");
+        // console.log(currentVrm);
 
-        const humanoid = currentVrm.humanoid;
-   
         mixer = new THREE.AnimationMixer(currentVrm.scene);
 
-        const animLoader = new FBXLoader();
         animLoader.load(
-            './animations/miyu.fbx', // Your animation file
-            (fbx) => {
-                const animation = fbx.animations[0];
-                console.log(fbx.animations);
+            './animations/idle.vrma', // Your animation file
+            (vrma) => {
+                const animation = vrma.animations[0];
+                console.log(vrma.animations);
 
-                const retargeted = retargetFBXAnimation(animation, currentVrm);
+                const retargeted = retargetAndInvertAnimation(animation, currentVrm);
 
-                console.log('retargetted:', retargeted);
-                // The rest of your code can stay for now
-                const action = mixer.clipAction(animation);
+                const action = mixer.clipAction(retargeted);
                 action.play();
             },
         );

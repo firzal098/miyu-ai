@@ -12,16 +12,18 @@
         "imports": {
             "three": "./three/build/three.module.js",
             "@pixiv/three-vrm": "./@pixiv/three-vrm/lib/three-vrm.module.js",
+            "@pixiv/three-vrm-animation": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm-animation@3.4.2/lib/three-vrm-animation.module.min.js",
 
             "three/addons/loaders/GLTFLoader.js": "./three/examples/jsm/loaders/GLTFLoader.js",
             "three/addons/controls/OrbitControls.js": "./three/examples/jsm/controls/OrbitControls.js",
             "three/addons/loaders/FBXLoader.js": "./three/examples/jsm/loaders/FBXLoader.js",
-            "three/addons/loaders/GLTFLoader.js": "./three/examples/jsm/loaders/GLTFLoader.js"
+            "three/addons/loaders/GLTFLoader.js": "./three/examples/jsm/loaders/GLTFLoader.js",
+            "rhodonite": "./rhodonite/dist/esm/index.js"
         }
     }
     </script>
-
-    <script type="module" src="character.js"></script>
+    
+    <script type="module" src="character.js" defer></script>
 
     <div class="container">
         <div class="background-image"></div>

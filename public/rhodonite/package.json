@@ -1,0 +1,106 @@
+{
+  "name": "rhodonite",
+  "version": "0.17.2",
+  "keywords": [
+    "rhodonite",
+    "webgl",
+    "webgl2",
+    "3d",
+    "web3d",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "dist/esm",
+    "dist/esmdev",
+    "VERSION-FILE",
+    "vendor/effekseer.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/actnwit/RhodoniteTS.git"
+  },
+  "author": "Yuki Shimada <emadurandal@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepublishOnly": "npm run preoutput",
+    "preoutput": "npm run build && npm run build-samples && npm run test",
+    "build": "npm run build-esm-dev && npm run build-esm-prod && npm run build-iife-dev && npm run build-iife-prod",
+    "build-iife-dev": "npm run create-VERSION-FILE && npx tsup --config ./config/tsup/tsup.config.iife.dev.ts && npm run rename-iife-dev",
+    "build-iife-prod": "npm run create-VERSION-FILE && npx tsup --config ./config/tsup/tsup.config.iife.prod.ts && npm run rename-iife-prod",
+    "build-esm-dev": "npm run create-VERSION-FILE && npx tsup --config ./config/tsup/tsup.config.esm.dev.ts",
+    "build-esm-prod": "npm run create-VERSION-FILE && npx tsup --config ./config/tsup/tsup.config.esm.prod.ts",
+    "watch-esm-dev": "npm run create-VERSION-FILE && npx tsup --config ./config/tsup/tsup.config.esm.dev.ts --watch src",
+    "watch-esm-prod": "npm run create-VERSION-FILE && npx tsup --config ./config/tsup/tsup.config.esm.prod.ts --watch src",
+    "rename-iife-dev": "npx shx mv dist/iifedev/iife.global.js dist/iifedev/rhodonite.js && npx shx mv dist/iifedev/iife.d.ts dist/iifedev/rhodonite.d.ts",
+    "rename-iife-prod": "npx shx mv dist/iife/iife.global.js dist/iife/rhodonite.min.js && npx shx mv dist/iife/iife.d.ts dist/iife/rhodonite.min.d.ts",
+    "build-samples": "tsc -p ./samples/",
+    "watch-samples": "tsc-watch -p ./samples/ --onSuccess \"npm run start\"",
+    "test": "npm run test-unit && npm run test-e2e",
+    "test-unit": "npm run test-unit-part -- ./src",
+    "test-unit-part": "npx vitest run --config ./config/test/vitest.config.ts",
+    "test-e2e": "npm run test-e2e-part -- ./samples/test_e2e",
+    "test-e2e-serial": "npm run test-e2e-part -- --runInBand ./samples/test_e2e",
+    "test-e2e-part": "npx vitest run --config ./config/test/vitest.config.e2e.ts",
+    "test-e2e-update": "npm run test-e2e-part -- --update ./samples/test_e2e",
+    "test-coverage": "npx vitest run --coverage",
+    "doc": "npx typedoc --exclude '**/*+(test|d).ts' --out ./docs/api/ ./src/",
+    "yarn-pack": "npx yarn pack -f rhodonite-tmp.tgz",
+    "start": "node server.js",
+    "create-VERSION-FILE": "npx shx touch VERSION-FILE",
+    "gts-lint": "gts lint ./src ./samples",
+    "gts-clean": "gts clean ./src ./samples",
+    "gts-fix": "gts fix ./src ./samples"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.3.24",
+    "@types/node": "^18.11.17",
+    "@types/webgl-ext": "^0.0.36",
+    "@types/webxr": "^0.5.10",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "7.8.0",
+    "@vitest/coverage-v8": "3.1.2",
+    "@webgpu/types": "^0.1.43",
+    "cliui": "^9.0.1",
+    "cross-env": "^7.0.3",
+    "esbuild-plugin-shaderity": "^0.0.4",
+    "esbuild-plugin-version": "^0.0.1",
+    "eslint-config-prettier": "^8.5.0",
+    "express": "^4.18.1",
+    "gts": "^3.1.0",
+    "happy-dom": "^17.4.4",
+    "jest-image-snapshot": "^6.4.0",
+    "json-loader": "^0.5.7",
+    "prettier": "^2.8.1",
+    "puppeteer": "^22.8.0",
+    "shx": "0.3.4",
+    "swc-loader": "^0.2.3",
+    "ts-loader": "^9.5.1",
+    "tsc-watch": "^6.2.0",
+    "tsup": "^8.4.0",
+    "typedoc": "^0.26.3",
+    "typescript": "^5.5.2",
+    "version-loader": "^0.1.0",
+    "vitest": "^3.1.2",
+    "vitest-puppeteer": "^11.0.3",
+    "webxr-input-profiles": "actnwit/webxr-input-profiles#21272c8a0a5512614e60dca5be26f7b1485ad6e7"
+  },
+  "dependencies": {
+    "ktx-parse": "0.2.2",
+    "shaderity": "^0.2.18",
+    "zstddec": "^0.0.2"
+  },
+  "description": "Rhodonite is a WebGL library written in TypeScript.",
+  "bugs": {
+    "url": "https://github.com/actnwit/RhodoniteTS/issues"
+  },
+  "homepage": "https://github.com/actnwit/RhodoniteTS#readme",
+  "directories": {
+    "doc": "docs"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

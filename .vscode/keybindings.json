@@ -1,0 +1,8 @@
+[
+  {
+    "key": "f5",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Restart Node Server",
+    "when": "workspaceFolder == your-project"
+  }
+]
