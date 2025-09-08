@@ -63,7 +63,7 @@ function retargetAndInvertAnimation(sourceClip, vrm) {
         const propertyName = parts[1];
 
         const camelCaseBoneName = boneName.charAt(0).toLowerCase() + boneName.slice(1);
-        const targetNode = humanoid.getRawBoneNode(camelCaseBoneName);
+        const targetNode = humanoid.getNormalizedBoneNode(camelCaseBoneName);
 
         if (targetNode) {
             const newTrackName = `${targetNode.name}.${propertyName}`;
@@ -72,21 +72,23 @@ function retargetAndInvertAnimation(sourceClip, vrm) {
 
             // --- INVERSION LOGIC ---
             // Check if this is a quaternion (rotation) track
-            if (propertyName === 'quaternion') {
-                const values = newTrack.values;
-                const tempQuat = new THREE.Quaternion();
+            // if (propertyName === 'quaternion') {
+            //     const values = newTrack.values;
+            //     const tempQuat = new THREE.Quaternion();
 
-                // The values array is a flat list of [qx1, qy1, qz1, qw1, qx2, qy2, ... ]
-                // We need to step through it 4 values at a time
-                for (let i = 0; i < values.length; i += 4) {
-                    tempQuat.fromArray(values, i); // Load the quaternion
-                    tempQuat.invert();             // Invert it
-                    tempQuat.toArray(values, i);   // Store it back into the array
-                }
-            }
+            //     // The values array is a flat list of [qx1, qy1, qz1, qw1, qx2, qy2, ... ]
+            //     // We need to step through it 4 values at a time
+            //     for (let i = 0; i < values.length; i += 4) {
+            //         tempQuat.fromArray(values, i); // Load the quaternion
+            //         tempQuat.invert();             // Invert it
+            //         tempQuat.toArray(values, i);   // Store it back into the array
+            //     }
+            // }
             // --- END INVERSION LOGIC ---
 
             newTracks.push(newTrack);
+        } else {
+            console.warn('Target node does not found:', camelCaseBoneName, boneName);
         }
     }
 
@@ -109,7 +111,7 @@ const animLoader = new GLTFLoader();
 animLoader.register((parser) => new VRMAnimationLoaderPlugin(parser));
 
 loader.load(
-    './assets/miyu.vrm', // Your VRM file
+    './assets/miyu2.vrm', // Your VRM file
     (gltf) => {
         currentVrm = gltf.userData.vrm;
         scene.add(currentVrm.scene);
@@ -126,16 +128,24 @@ loader.load(
         animLoader.load(
             './animations/idle.vrma', // Your animation file
             (vrma) => {
+                console.log(vrma);
                 const animation = vrma.animations[0];
                 console.log(vrma.animations);
-
                 const retargeted = retargetAndInvertAnimation(animation, currentVrm);
-
                 const action = mixer.clipAction(retargeted);
+                console.log('Retargetted animation:', retargeted);  
                 action.play();
             },
+            null,
+            (err) => {
+                console.error(err);
+            }
         );
     },
+    null,
+    (err) => {
+        console.error(err);
+    }
 );
 
 // 5. Animation Loop
